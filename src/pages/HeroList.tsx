@@ -17,10 +17,15 @@ const Container = styled.div`
   grid-auto-flow: dense;
 `;
 
-const HeroList = () => {
+type Props = {
+  onSelect: (heroId: string) => void;
+};
+
+const HeroList = (props: Props) => {
   const [heroes, setHeroes] = useState<Hero[]>([]);
   const [loading, setLoading] = useState<boolean>();
   const { heroId } = useParams();
+  const { onSelect } = props;
 
   useEffect(() => {
     const fetch = async () => {
@@ -50,7 +55,12 @@ const HeroList = () => {
   return (
     <Container>
       {heroes.map(hero => (
-        <HeroCard key={hero.id} {...hero} selected={hero.id === heroId} />
+        <HeroCard
+          key={hero.id}
+          {...hero}
+          selected={hero.id === heroId}
+          onSelect={onSelect}
+        />
       ))}
     </Container>
   );

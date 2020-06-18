@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
+  useHistory,
 } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
@@ -21,25 +22,48 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const withRouter = (Component: React.FunctionComponent) => () => (
+  <Router>
+    <Component />
+  </Router>
+);
+
 const App = () => {
+  const heroProfileContainerRef = useRef<HTMLDivElement>(null);
+  const history = useHistory();
+
+  const onSelect = useCallback(
+    (heroId: string) => {
+      history.push(`/heroes/${heroId}`);
+
+      if (!heroProfileContainerRef.current) return;
+
+      window.scrollTo({
+        top: heroProfileContainerRef.current.offsetTop,
+        behavior: 'smooth',
+      });
+    },
+    [history],
+  );
+
   return (
     <>
       <GlobalStyle />
-      <Router>
-        <Switch>
-          <Route path="/heroes/:heroId?">
-            <Layout>
-              <HeroList />
+      <Switch>
+        <Route path="/heroes/:heroId?">
+          <Layout>
+            <HeroList onSelect={onSelect} />
+            <div ref={heroProfileContainerRef}>
               <Route path="/heroes/:heroId">
                 <HeroProfile />
               </Route>
-            </Layout>
-          </Route>
-          <Redirect to="/heroes" />
-        </Switch>
-      </Router>
+            </div>
+          </Layout>
+        </Route>
+        <Redirect to="/heroes" />
+      </Switch>
     </>
   );
 };
 
-export default App;
+export default withRouter(App);

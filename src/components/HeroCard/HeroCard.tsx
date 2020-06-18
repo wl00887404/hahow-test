@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useHistory } from 'react-router-dom';
 
 import Button from '../Button';
 
@@ -34,21 +33,17 @@ type Props = {
   name: string;
   image: string;
   selected: boolean;
+  onSelect: (heroId: string) => void;
 };
 
 const HeroCard = (props: Props) => {
-  const { id, name, image, selected } = props;
-  const history = useHistory();
+  const { id, name, image, selected, onSelect } = props;
 
   return (
     <Container selected={selected}>
       <Img src={image} />
       <div>{name}</div>
-      <Button
-        block
-        onClick={() => history.push(`/heroes/${id}`)}
-        disabled={selected}
-      >
+      <Button block onClick={() => onSelect(id)} disabled={selected}>
         選擇
       </Button>
     </Container>
