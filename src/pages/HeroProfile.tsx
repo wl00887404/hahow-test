@@ -9,9 +9,11 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import Ability from '../components/Ability';
+import Ability from '../components/Ability/Ability';
+import AbilitySkeleton from '../components/Ability/AbilitySkeleton';
 import Button from '../components/Button';
 import { Profile, AbilityNames } from '../types';
+import Placeholder from '../components/Placeholder';
 
 const Container = styled.div`
   background-color: white;
@@ -34,10 +36,10 @@ const AbilityContainer = styled.div`
 `;
 
 const SaveButtonContainer = styled.div`
+  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  align-items: stretch;
   margin-top: 2em;
 
   & > *:not(:last-child) {
@@ -49,6 +51,7 @@ const SaveButtonContainer = styled.div`
     width: 100%;
   }
 `;
+
 const HeroProfile = () => {
   const [profile, setProfile] = useState<Profile>();
   const [remainingValue, setRemainingValue] = useState<number>(0);
@@ -78,7 +81,22 @@ const HeroProfile = () => {
     fetch();
   }, [heroId, setOriginProfile]);
 
-  if (!profile || loading) return <div>Loading...</div>;
+  if (!profile || loading)
+    return (
+      <Container>
+        <AbilityContainer>
+          {Object.values(AbilityNames).map(name => (
+            <AbilitySkeleton key={name} />
+          ))}
+        </AbilityContainer>
+        <SaveButtonContainer>
+          <Placeholder>剩餘點數： {remainingValue}</Placeholder>
+          <Button block skeleton>
+            儲存
+          </Button>
+        </SaveButtonContainer>
+      </Container>
+    );
 
   const onIncrement = (name: AbilityNames) => () => {
     if (remainingValue === 0) return;

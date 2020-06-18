@@ -1,15 +1,16 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import Button from './Button';
+
+import Button from '../Button';
 
 const SelectedStyle = css`
   background-color: rgb(255, 249, 225);
 `;
 
-type ContainerProps = { selected: boolean };
+type ContainerProps = { selected?: boolean };
 
-const Container = styled.div<ContainerProps>`
+export const Container = styled.div<ContainerProps>`
   text-align: center;
   padding: 1em;
 
@@ -25,7 +26,7 @@ const Img = styled.img`
   margin: 0 auto;
   width: 200px;
   height: 200px;
-  background-color: #eee;
+  border-radius: 3px;
 `;
 
 type Props = {

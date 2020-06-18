@@ -1,27 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Button from './Button';
-import { AbilityNames } from '../types';
+import Button from '../Button';
+import { AbilityNames } from '../../types';
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   line-height: 1.5;
 `;
 
-const StyledButton = styled(Button)`
+export const StyledButton = styled(Button)`
   width: 1.5em;
   height: 1.5em;
   padding: 0;
 `;
 
-const Name = styled.div`
+export const Name = styled.div`
   margin-right: 1.5em;
   width: 2em;
 `;
 
-const Value = styled.div`
-  min-width: 2em;
+export const Value = styled.div`
+  width: 2em;
+  margin: 0 0.5em;
   text-align: center;
 `;
 

@@ -3,8 +3,10 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
-import HeroCard from '../components/HeroCard';
+import HeroCard from '../components/HeroCard/HeroCard';
+import HeroCardSkeleton from '../components/HeroCard/HeroCardSkeleton';
 import { Hero } from '../types';
+import range from '../utils/range';
 
 const Container = styled.div`
   background-color: white;
@@ -35,7 +37,15 @@ const HeroList = () => {
     fetch();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <Container>
+        {range(4).map(index => (
+          <HeroCardSkeleton key={index} />
+        ))}
+      </Container>
+    );
+  }
 
   return (
     <Container>

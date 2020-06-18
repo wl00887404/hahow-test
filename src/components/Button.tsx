@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { movingFlashStyle } from './Placeholder';
 
 const spinningAnimation = keyframes`
   from {
@@ -8,6 +9,13 @@ const spinningAnimation = keyframes`
   to {
     transform: rotate(360deg);
   }
+`;
+
+const skeletonStyle = css`
+  color: transparent;
+  pointer-events: none;
+
+  ${movingFlashStyle};
 `;
 
 const blockStyle = css`
@@ -35,13 +43,15 @@ const loadingStyle = css`
     animation: ${spinningAnimation} 0.5s linear infinite;
   }
 `;
+
 type Props = {
   loading?: boolean;
   block?: boolean;
+  skeleton?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const FilteredPropsButton = (props: Props) => {
-  const { loading, block, children, ...otherProps } = props;
+  const { loading, block, skeleton, children, ...otherProps } = props;
 
   return <button {...otherProps}>{children}</button>;
 };
@@ -74,6 +84,7 @@ const Button = styled<typeof FilteredPropsButton>(FilteredPropsButton)`
 
   ${({ loading }) => loading && loadingStyle};
   ${({ block }) => block && blockStyle};
+  ${({ skeleton }) => skeleton && skeletonStyle};
 `;
 
 export default Button;
