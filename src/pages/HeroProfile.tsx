@@ -14,6 +14,7 @@ import AbilitySkeleton from '../components/Ability/AbilitySkeleton';
 import Button from '../components/Button';
 import { Profile, AbilityNames } from '../types';
 import Placeholder from '../components/Placeholder';
+import { alert } from '../components/Alert';
 
 const Container = styled.div`
   background-color: white;
@@ -186,7 +187,12 @@ const useSaveProfile = (
       profile,
     );
 
-    alert(data === 'OK' ? '儲存成功' : '儲存失敗');
+    if (data === 'OK') {
+      alert.success('儲存成功');
+    } else {
+      alert.fail('儲存失敗');
+    }
+
     setLoading(false);
     setOriginProfile(profile);
   };

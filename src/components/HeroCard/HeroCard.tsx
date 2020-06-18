@@ -26,6 +26,7 @@ const Img = styled.img`
   width: 200px;
   height: 200px;
   border-radius: 3px;
+  background-color: #e8e8e8;
 `;
 
 type Props = {
