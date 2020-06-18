@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -48,7 +54,12 @@ const HeroProfile = () => {
   const [remainingValue, setRemainingValue] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { heroId } = useParams();
-  const { loading: onSaveLoading, onSave } = useSaveProfile(profile, heroId);
+  const {
+    loading: onSaveLoading,
+    onSave,
+    isSaveable,
+    setOriginProfile,
+  } = useSaveProfile(heroId, profile, remainingValue);
 
   useEffect(() => {
     const fetch = async () => {
@@ -59,12 +70,13 @@ const HeroProfile = () => {
       );
 
       setProfile(data);
+      setOriginProfile(data);
       setRemainingValue(0);
       setLoading(false);
     };
 
     fetch();
-  }, [heroId]);
+  }, [heroId, setOriginProfile]);
 
   if (!profile || loading) return <div>Loading...</div>;
 
@@ -97,7 +109,7 @@ const HeroProfile = () => {
   return (
     <Container>
       <AbilityContainer>
-        {Object.values(AbilityNames).map((name: AbilityNames) => (
+        {Object.values(AbilityNames).map(name => (
           <Ability
             name={name}
             value={profile[name]}
@@ -114,7 +126,7 @@ const HeroProfile = () => {
           block
           onClick={onSave}
           loading={onSaveLoading}
-          disabled={remainingValue !== 0}
+          disabled={!isSaveable}
         >
           儲存
         </Button>
@@ -123,11 +135,31 @@ const HeroProfile = () => {
   );
 };
 
-const useSaveProfile = (profile: Profile | undefined, heroId: string) => {
+const useSaveProfile = (
+  heroId: string,
+  profile: Profile | undefined,
+  remainingValue: number,
+) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const originProfileRef = useRef<Profile>();
+
+  const isSaveable = useMemo(() => {
+    const originProfile = originProfileRef.current;
+    if (!originProfile || !profile) return false;
+
+    const isEqual = Object.values(AbilityNames).every(
+      name => originProfile[name] === profile[name],
+    );
+
+    return !isEqual && remainingValue === 0;
+  }, [profile, remainingValue]);
+
+  const setOriginProfile = useCallback((nextOriginProfile: Profile) => {
+    originProfileRef.current = nextOriginProfile;
+  }, []);
 
   const onSave = async () => {
-    if (!profile) return;
+    if (loading || !profile) return;
 
     setLoading(true);
 
@@ -138,9 +170,10 @@ const useSaveProfile = (profile: Profile | undefined, heroId: string) => {
 
     alert(data === 'OK' ? '儲存成功' : '儲存失敗');
     setLoading(false);
+    setOriginProfile(profile);
   };
 
-  return { loading, onSave };
+  return { loading, onSave, isSaveable, setOriginProfile };
 };
 
 export default HeroProfile;
