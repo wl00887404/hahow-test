@@ -138,33 +138,39 @@ const useProfile = () => {
   const [profile, setProfile] = useState<Profile>();
   const [remainingValue, setRemainingValue] = useState<number>(0);
 
-  const onIncrement = (name: AbilityNames) => () => {
-    if (!profile || remainingValue === 0) return;
+  const onIncrement = useCallback(
+    (name: AbilityNames) => () => {
+      if (!profile || remainingValue === 0) return;
 
-    const nextProfile = {
-      ...profile,
-      [name]: profile[name] + 1,
-    };
+      const nextProfile = {
+        ...profile,
+        [name]: profile[name] + 1,
+      };
 
-    setProfile(nextProfile);
-    setRemainingValue(remainingValue - 1);
-  };
+      setProfile(nextProfile);
+      setRemainingValue(remainingValue - 1);
+    },
+    [profile, remainingValue],
+  );
 
-  const onDecrement = (name: AbilityNames) => () => {
-    if (!profile) return;
+  const onDecrement = useCallback(
+    (name: AbilityNames) => () => {
+      if (!profile) return;
 
-    const nextValue = profile[name] - 1;
+      const nextValue = profile[name] - 1;
 
-    if (nextValue < 0) return;
+      if (nextValue < 0) return;
 
-    const nextProfile = {
-      ...profile,
-      [name]: nextValue,
-    };
+      const nextProfile = {
+        ...profile,
+        [name]: nextValue,
+      };
 
-    setProfile(nextProfile);
-    setRemainingValue(remainingValue + 1);
-  };
+      setProfile(nextProfile);
+      setRemainingValue(remainingValue + 1);
+    },
+    [profile, remainingValue],
+  );
 
   return {
     profile,
@@ -199,7 +205,7 @@ const useSaveProfile = (
     originProfileRef.current = nextOriginProfile;
   }, []);
 
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     if (loading || !profile) return;
 
     setLoading(true);
@@ -217,7 +223,7 @@ const useSaveProfile = (
 
     setLoading(false);
     setOriginProfile(profile);
-  };
+  }, [heroId, profile, loading, setOriginProfile]);
 
   return { loading, onSave, isSaveable, setOriginProfile };
 };
