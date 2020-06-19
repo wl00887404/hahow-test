@@ -3,9 +3,9 @@
 ## 我們該如何執行完成的 package
 
 ```bash
-npm install
-npm run build
-npm run start
+yarn
+yarn build
+yarn start
 ```
 
 ## 專案的架構、Web 的架構邏輯
@@ -18,13 +18,19 @@ npm run start
 ## 你對於所有使用到的第三方 library 的理解，以及他們的功能簡介
 
 - axios
-  - 處理 ajax ，瀏覽器支援度高，很讚。
+  - 處理 ajax 的 library 。
+  - 瀏覽器支援度很高。
+  - promise 的形狀， code 簡潔好維護。
+  - 社群龐大，有大量的文件、範例、教學。
 - react-router-dom
-  - 處理 router，有支援 hooks 、 TypeScript ，如果不使用 next.js 的首選。
+  - 處理 router 的 library 。
+  - 支援 react hooks 、 TypeScript 。
+  - 社群龐大，有大量的文件、範例、教學。
+- styled-components
+  - CSS in JavaScript 。
+  - 支援 TypeScript 。
 - serve
   - serve 靜態檔案。
-- styled-components
-  - CSS in JavaScript，有 TypeScript 。
 
 ## 你在程式碼中寫註解的原則，遇到什麼狀況會寫註解
 
@@ -40,5 +46,5 @@ npm run start
 針對 `Hero 能力值不能為零` 、 `送出的能力值總和必須與拿到的時候相同` ，  
 在儲存按鈕的邏輯做了比較複雜的處理。
 
-額外做了 skeleton loading 以及在 mobile 時，  
-選擇 Hero 會自動下滑至 Hero Profile 。
+額外做了 skeleton loading ，覺得很美的，  
+以及在 mobile 時，選擇 Hero 會自動下滑至 Hero Profile 。
