@@ -84,7 +84,7 @@ const HeroProfile = () => {
 
   if (!profile || loading)
     return (
-      <Container>
+      <>
         <AbilityContainer>
           {Object.values(AbilityNames).map(name => (
             <AbilitySkeleton key={name} />
@@ -96,7 +96,7 @@ const HeroProfile = () => {
             儲存
           </Button>
         </SaveButtonContainer>
-      </Container>
+      </>
     );
 
   const onIncrement = (name: AbilityNames) => () => {
@@ -126,7 +126,7 @@ const HeroProfile = () => {
   };
 
   return (
-    <Container>
+    <>
       <AbilityContainer>
         {Object.values(AbilityNames).map(name => (
           <Ability
@@ -150,7 +150,7 @@ const HeroProfile = () => {
           儲存
         </Button>
       </SaveButtonContainer>
-    </Container>
+    </>
   );
 };
 
@@ -200,4 +200,31 @@ const useSaveProfile = (
   return { loading, onSave, isSaveable, setOriginProfile };
 };
 
-export default HeroProfile;
+type Props = {
+  autoFocus: boolean;
+};
+
+const withContainer = (Component: React.FunctionComponent) => (
+  props: Props,
+) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { autoFocus } = props;
+  const { heroId } = useParams();
+
+  useEffect(() => {
+    if (!autoFocus || !ref.current) return;
+
+    window.scrollTo({
+      top: ref.current.offsetTop,
+      behavior: 'smooth',
+    });
+  }, [heroId, autoFocus]);
+
+  return (
+    <Container ref={ref}>
+      <Component />
+    </Container>
+  );
+};
+
+export default withContainer(HeroProfile);

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -29,19 +29,13 @@ const withRouter = (Component: React.FunctionComponent) => () => (
 );
 
 const App = () => {
-  const heroProfileContainerRef = useRef<HTMLDivElement>(null);
+  const [autoFocus, setAutoFocus] = useState<boolean>(false);
   const history = useHistory();
 
   const onSelect = useCallback(
     (heroId: string) => {
+      setAutoFocus(true);
       history.push(`/heroes/${heroId}`);
-
-      if (!heroProfileContainerRef.current) return;
-
-      window.scrollTo({
-        top: heroProfileContainerRef.current.offsetTop,
-        behavior: 'smooth',
-      });
     },
     [history],
   );
@@ -53,11 +47,9 @@ const App = () => {
         <Route path="/heroes/:heroId?">
           <Layout>
             <HeroList onSelect={onSelect} />
-            <div ref={heroProfileContainerRef}>
-              <Route path="/heroes/:heroId">
-                <HeroProfile />
-              </Route>
-            </div>
+            <Route path="/heroes/:heroId">
+              <HeroProfile autoFocus={autoFocus} />
+            </Route>
           </Layout>
         </Route>
         <Redirect to="/heroes" />
