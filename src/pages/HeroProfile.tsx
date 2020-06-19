@@ -54,10 +54,16 @@ const SaveButtonContainer = styled.div`
 `;
 
 const HeroProfile = () => {
-  const [profile, setProfile] = useState<Profile>();
-  const [remainingValue, setRemainingValue] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { heroId } = useParams();
+  const {
+    profile,
+    setProfile,
+    remainingValue,
+    setRemainingValue,
+    onIncrement,
+    onDecrement,
+  } = useProfile();
   const {
     loading: onSaveLoading,
     onSave,
@@ -80,7 +86,7 @@ const HeroProfile = () => {
     };
 
     fetch();
-  }, [heroId, setOriginProfile]);
+  }, [heroId, setOriginProfile, setProfile, setRemainingValue]);
 
   if (!profile || loading)
     return (
@@ -98,32 +104,6 @@ const HeroProfile = () => {
         </SaveButtonContainer>
       </>
     );
-
-  const onIncrement = (name: AbilityNames) => () => {
-    if (remainingValue === 0) return;
-
-    const nextProfile = {
-      ...profile,
-      [name]: profile[name] + 1,
-    };
-
-    setProfile(nextProfile);
-    setRemainingValue(remainingValue - 1);
-  };
-
-  const onDecrement = (name: AbilityNames) => () => {
-    const nextValue = profile[name] - 1;
-
-    if (nextValue < 0) return;
-
-    const nextProfile = {
-      ...profile,
-      [name]: nextValue,
-    };
-
-    setProfile(nextProfile);
-    setRemainingValue(remainingValue + 1);
-  };
 
   return (
     <>
@@ -152,6 +132,48 @@ const HeroProfile = () => {
       </SaveButtonContainer>
     </>
   );
+};
+
+const useProfile = () => {
+  const [profile, setProfile] = useState<Profile>();
+  const [remainingValue, setRemainingValue] = useState<number>(0);
+
+  const onIncrement = (name: AbilityNames) => () => {
+    if (!profile || remainingValue === 0) return;
+
+    const nextProfile = {
+      ...profile,
+      [name]: profile[name] + 1,
+    };
+
+    setProfile(nextProfile);
+    setRemainingValue(remainingValue - 1);
+  };
+
+  const onDecrement = (name: AbilityNames) => () => {
+    if (!profile) return;
+
+    const nextValue = profile[name] - 1;
+
+    if (nextValue < 0) return;
+
+    const nextProfile = {
+      ...profile,
+      [name]: nextValue,
+    };
+
+    setProfile(nextProfile);
+    setRemainingValue(remainingValue + 1);
+  };
+
+  return {
+    profile,
+    setProfile,
+    remainingValue,
+    setRemainingValue,
+    onIncrement,
+    onDecrement,
+  };
 };
 
 const useSaveProfile = (
